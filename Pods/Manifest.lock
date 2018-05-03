@@ -1,0 +1,20 @@
+PODS:
+  - Alamofire (4.2.0)
+  - ProtocolBuffers-Swift (4.0.1)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.2.0)
+  - ProtocolBuffers-Swift
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - ProtocolBuffers-Swift
+
+SPEC CHECKSUMS:
+  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
+  ProtocolBuffers-Swift: d1c0724bbfd1924c219131ff80bdda09352d959c
+
+PODFILE CHECKSUM: 025c2720061b39815a93b010cf7eb4337be9afc1
+
+COCOAPODS: 1.5.0

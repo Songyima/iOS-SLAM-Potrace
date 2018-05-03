@@ -1,0 +1,15 @@
+message MapCell{
+    required uint32 x = 1;
+    required uint32 y = 2;
+    enum Value {
+        FREE = 0;
+        OBSTACLE = 1;
+        UNKNOWN = 2;
+    }
+    optional Value value = 3 [default = UNKNOWN];
+}
+message Map{
+    required uint32 width = 1;
+    required uint32 height = 2;
+    repeated MapCell mapCell = 3;
+}

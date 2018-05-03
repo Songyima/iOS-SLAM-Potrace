@@ -1,0 +1,4 @@
+message Query{
+    required uint32 cleaning_time = 1;
+    required uint32 remaining_capacity = 2;
+}

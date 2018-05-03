@@ -1,0 +1,6 @@
+syntax="proto2";
+
+message Pose{
+    required uint32 x = 1;
+    required uint32 y = 2;
+}
