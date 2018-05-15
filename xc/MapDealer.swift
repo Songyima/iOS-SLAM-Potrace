@@ -18,7 +18,7 @@ class MapDealer{
     
     
     // Read .pgm return  wide    height    data
-    func DealPGM2(name:String = "test_map.pgm") -> (wide:Int, height:Int,data:[UInt8]) {
+    func DealPGM2(name:String = "willow-full.pgm") -> (wide:Int, height:Int,data:[UInt8]) {
         
         //        var home : String = NSHomeDirectory()
         //        print(home)
@@ -141,7 +141,7 @@ class MapDealer{
             let mapCells = (map?.mapCell)!
             self.width = Int((map?.width)!)
             self.height = Int((map?.height)!)
-            imagePixels = [UInt8](repeating: 125, count: width*height)
+            imagePixels = [UInt8](repeating: 205, count: width*height)
             
             for x in mapCells{
                 print(x.x, x.y, x.value)

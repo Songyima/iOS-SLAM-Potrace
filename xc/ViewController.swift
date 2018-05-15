@@ -38,30 +38,32 @@ class ViewController: UIViewController, UIScrollViewDelegate{
         
     }
     //MARK: action
+    func loop(time:Timer) {
+        RequireMap()
+        requester.Qury(ba: Battery, clt: CleanTime)
+        print("LOOOOP")
+    }
     @IBAction func Share(_ sender: UIButton) {
         ChangeButtonPic(but: sender, name: "flushBlue")
         self.Share.isEnabled = false
-        Scroll.bringSubview(toFront: indicator)
-        indicator.startAnimating()
-        
-        /*DispatchQueue.global().async {
-            let tmp = Potrace.Settings()
-            let tmpImg = self.mapdealer.updateImage(settings: tmp)
-            //Keep in mind：UI必须在主队列更新！
-            DispatchQueue.main.async {
-                self.showImg.removeFromSuperview()
-                self.showImg = UIImageView(image: tmpImg)
-                self.showImg.backgroundColor = UIColor.gray
-                self.Scroll.contentSize = CGSize(width: self.showImg.frame.width, height: self.showImg.frame.height)
-                
-                self.Scroll.addSubview(self.showImg)
-                self.scrollViewDidZoom(self.Scroll)
-                //print("end")
-                self.ChangeButtonPic(but: self.Share, name: "flush")
-                self.indicator.stopAnimating()
-                self.Share.isEnabled = true
-            }
-        }*/
+//        DispatchQueue.global().async {
+//            let tmp = Potrace.Settings()
+//            let tmpImg = self.mapdealer.updateImage(settings: tmp)
+//            //Keep in mind：UI必须在主队列更新！
+//            DispatchQueue.main.async {
+//                self.showImg.removeFromSuperview()
+//                self.showImg = UIImageView(image: tmpImg)
+//                self.showImg.backgroundColor = UIColor.gray
+//                self.Scroll.contentSize = CGSize(width: self.showImg.frame.width, height: self.showImg.frame.height)
+//                
+//                self.Scroll.addSubview(self.showImg)
+//                self.scrollViewDidZoom(self.Scroll)
+//                //print("end")
+//                self.ChangeButtonPic(but: self.Share, name: "flush")
+//                self.indicator.stopAnimating()
+//                self.Share.isEnabled = true
+//            }
+//        }
         RequireMap()
 //        requester.Position(content: self.showImg.image!)
     }
@@ -105,23 +107,12 @@ class ViewController: UIViewController, UIScrollViewDelegate{
     //here use button--more
     @IBAction func test(_ sender: UIButton) {
         requester.Qury(ba: Battery, clt: CleanTime)
-//        ChangeButtonPic(but: sender, name: "moreBlue")
-//        sender.isEnabled = false
-////        DispatchQueue.global().async {
-//            let foo = FooRequest.Builder()
-//            self.code += 1
-//            foo.code = Int32(self.code % 3)
-//            self.requester.Test(data: try!foo.build().data())
-//        
-//        
-//            DispatchQueue.main.async {
-//                sender.isEnabled = true
-//                self.ChangeButtonPic(but: sender, name: "more")
-//            }
-////        }
     }
     
     func RequireMap(){
+        Scroll.bringSubview(toFront: indicator)
+        indicator.startAnimating()
+        
         let realURL = requester.httpURL + "/mymap"
         var image = UIImage()
         Alamofire.request(realURL).responseData(){
@@ -198,6 +189,8 @@ class ViewController: UIViewController, UIScrollViewDelegate{
         Scroll.delegate = self
         Scroll.zoomScale = 0.8
         requester.viewcontrol = self
+        
+        Timer.scheduledTimer(timeInterval: 5*60, target: self, selector: #selector(loop), userInfo: nil, repeats: true)
     }
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {

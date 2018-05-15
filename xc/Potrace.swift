@@ -239,10 +239,139 @@ final class Potrace {
 //        print("processPath", endTime2-endTime)
     }
     
+    /*make some changes
+    */
+    func findNext(bm1 : Bitmap, point: PointI) -> PointI? {
+        var i = bm1.w * point.y + point.x
+        while i < bm1.size && bm1.data[i] != 1 {
+            i += 1
+        }
+        if i < bm1.size {
+            return bm1.index(i: i)
+        } else {
+            return nil
+        }
+    }
+    func majority(bm1 : Bitmap,x: Int, y: Int) -> Int {
+        
+        for i in 2..<5 {
+            var ct = 0
+            
+            for a in (-i + 1)...(i - 1) {
+                ct += bm1.at(x: x + a, y: y + i - 1) ? 1 : -1
+                ct += bm1.at(x: x + i - 1, y: y + a - 1) ? 1 : -1
+                ct += bm1.at(x: x + a - 1, y: y - i) ? 1 : -1
+                ct += bm1.at(x: x - i, y: y + a) ? 1 : -1
+            }
+            
+            return ct > 0 ? 1 : 0
+        }
+        
+        return 0
+    }
+    func findPath(bm1 : Bitmap,point: PointI) -> Path {
+        var path = Path(),
+        x = point.x, y = point.y,
+        dirx = 0, diry = 1, tmp: Int
+        
+        path.sign = bm.at(x: point.x, y: point.y) ? "+" : "-"
+        
+        while true {
+            path.pt.append(Point(x: x, y: y))
+            if x > path.maxX {
+                path.maxX = x
+            }
+            if x < path.minX {
+                path.minX = x
+            }
+            if y > path.maxY {
+                path.maxY = y
+            }
+            if y < path.minY {
+                path.minY = y
+            }
+            path.len += 1
+            
+            x += dirx
+            y += diry
+            path.area -= x * diry
+            
+            if x == point.x && y == point.y {
+                break
+            }
+            
+            let l = bm1.at(x: x + (dirx + diry - 1 ) / 2, y: y + (diry - dirx - 1) / 2)
+            let r = bm1.at(x: x + (dirx - diry - 1) / 2, y: y + (diry + dirx - 1) / 2)
+            
+            if r && !l {
+                if info.turnpolicy == "right" ||
+                    (info.turnpolicy == "black" && path.sign == "+") ||
+                    (info.turnpolicy == "white" && path.sign == "-") ||
+                    (info.turnpolicy == "majority" && majority(bm1:bm1,x: x, y: y) != 0) ||
+                    (info.turnpolicy == "minority" && majority(bm1:bm1,x: x, y: y) == 0) {
+                    tmp = dirx
+                    dirx = -diry
+                    diry = tmp
+                } else {
+                    tmp = dirx
+                    dirx = diry
+                    diry = -tmp
+                }
+            } else if r {
+                tmp = dirx
+                dirx = -diry
+                diry = tmp
+            } else if !l {
+                tmp = dirx
+                dirx = diry
+                diry = -tmp
+            }
+        }
+        
+        return path
+    }
+    func xorPath(bm1 : Bitmap, path: Path) ->Bitmap{
+        var bm2 = bm1.copy()
+        var y1 = path.pt[0].y,
+        len = path.len,
+        x: Int, y: Int, maxX: Int, minY: Int
+        
+        for i in 1..<len {
+            x = path.pt[i].x
+            y = path.pt[i].y
+            
+            if y != y1 {
+                minY = y1 < y ? y1 : y
+                maxX = path.maxX
+                for j in x..<maxX {
+                    bm2.flip(x: j, y: minY)
+                }
+                y1 = y
+            }
+        }
+        
+        return bm2
+    }
+
+    
     func bmToPathList() {
         var bm1 = bm.copy()
         var currentPoint = Point(x: 0, y: 0)
         var path: Path
+        
+        func findNext() -> Bool {
+            var i = bm1.w * currentPoint.y + currentPoint.x
+            while i < bm1.size && bm1.data[i] != 1 {
+                i += 1
+            }
+            if i < bm1.size {
+                currentPoint = bm1.index(i: i)
+                return true
+            } else {
+                return false
+            }
+        }
+
         
         func findNext(point: PointI) -> PointI? {
             var i = bm1.w * point.y + point.x
@@ -356,7 +485,7 @@ final class Potrace {
             }
         }
         
-        while let currentPoint = findNext(point: currentPoint) {
+        while findNext() {
             
             path = findPath(point: currentPoint)
             
